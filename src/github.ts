@@ -70,7 +70,6 @@ export class GitHub {
 
   /** Get the PR description. */
   getPRDescription = async (pr: PullRequestParams): Promise<string | null> => {
-    console.log('Hello');
     try {
       const { owner, repo, number } = pr;
       const { data } = await this.client.pulls.get({
