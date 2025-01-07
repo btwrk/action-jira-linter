@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as octokit from '@octokit/rest';
 import similarity from 'string-similarity';
-import { CreateIssueCommentParams, PullRequestUpdateParams, UpdateLabelParams } from './types';
+import { CreateIssueCommentParams, PullRequestParams, PullRequestUpdateParams, UpdateLabelParams } from './types';
 import { BOT_BRANCH_PATTERNS, DEFAULT_BRANCH_PATTERNS, MARKER_REGEX } from './constants';
 
 export class GitHub {
@@ -67,6 +67,24 @@ export class GitHub {
       core.setFailed((error as Error)?.message ?? 'Failed to add comment');
     }
   };
+
+  /** Get the PR description. */
+  getPRDescription = async (pr: PullRequestParams): Promise<string> => {
+    try {
+      const { owner, repo, number, } = pr;
+      const { data: { body } } = await this.client.pulls.get({
+         owner,
+         repo,
+         pull_number: number,
+       });
+      return body;
+    } catch (error) {
+      console.error(error);
+      // eslint-disable-next-line i18n-text/no-en
+      core.setFailed((error as Error)?.message ?? 'Failed to fetch latest PR description');
+      throw(error);
+    }
+  }
 
   /** Get a comment based on story title and PR title similarity. */
   getPRTitleComment = (storyTitle: string, prTitle: string): string => {
