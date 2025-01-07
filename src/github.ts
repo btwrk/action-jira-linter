@@ -72,12 +72,14 @@ export class GitHub {
   getPRDescription = async (pr: PullRequestParams): Promise<string> => {
     try {
       const { owner, repo, number, } = pr;
-      const { data: { body } } = await this.client.pulls.get({
+      const { data} = await this.client.pulls.get({
          owner,
          repo,
          pull_number: number,
        });
-      return body;
+      console.log(data)
+      console.log(JSON.stringify(data))
+      return data.body;
     } catch (error) {
       console.error(error);
       // eslint-disable-next-line i18n-text/no-en
