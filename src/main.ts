@@ -148,7 +148,9 @@ async function run(): Promise<void> {
 
       await gh.addLabels({ ...commonPayload, labels });
 
+      console.log("hello1");
       const prBody = await gh.getPRDescription(pullRequest);
+      console.log("hello2");
 
       if (GitHub.shouldUpdatePRDescription(prBody)) {
         console.log('Updating PR description…', prBody);
