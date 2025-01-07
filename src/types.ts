@@ -14,7 +14,7 @@ export interface PullRequestUpdateParams extends UpdateParams {
   body?: string;
 }
 
-export interface PullRequestParams {
+export interface PullRequestParams extends UpdateParams {
   number: number;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   html_url?: string;

@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
 import * as octokit from '@octokit/rest';
 import similarity from 'string-similarity';
-import { CreateIssueCommentParams, PullRequestUpdateParams, UpdateLabelParams } from './types';
+import { CreateIssueCommentParams, PullRequestParams, PullRequestUpdateParams, UpdateLabelParams } from './types';
 import { BOT_BRANCH_PATTERNS, DEFAULT_BRANCH_PATTERNS, MARKER_REGEX } from './constants';
 
 export class GitHub {
@@ -65,6 +65,25 @@ export class GitHub {
       console.error(error);
       // eslint-disable-next-line i18n-text/no-en
       core.setFailed((error as Error)?.message ?? 'Failed to add comment');
+    }
+  };
+
+  /** Get the PR description. */
+  getPRDescription = async (pr: PullRequestParams): Promise<string | null> => {
+    try {
+      const { owner, repo, number } = pr;
+      const { data } = await this.client.pulls.get({
+        owner,
+        repo,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        pull_number: number,
+      });
+      return data.body;
+    } catch (error) {
+      console.error(error);
+      // eslint-disable-next-line i18n-text/no-en
+      core.setFailed((error as Error)?.message ?? 'Failed to fetch latest PR description');
+      throw error;
     }
   };
 
