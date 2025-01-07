@@ -69,25 +69,24 @@ export class GitHub {
   };
 
   /** Get the PR description. */
-  getPRDescription = async (pr: PullRequestParams): Promise<string> => {
-    console.log("Hello")
+  getPRDescription = async (pr: PullRequestParams): Promise<string | null> => {
+    console.log('Hello');
     try {
-      const { owner, repo, number, } = pr;
-      const { data} = await this.client.pulls.get({
-         owner,
-         repo,
-         pull_number: number,
-       });
-      console.log(data)
-      console.log(JSON.stringify(data))
+      const { owner, repo, number } = pr;
+      const { data } = await this.client.pulls.get({
+        owner,
+        repo,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        pull_number: number,
+      });
       return data.body;
     } catch (error) {
       console.error(error);
       // eslint-disable-next-line i18n-text/no-en
       core.setFailed((error as Error)?.message ?? 'Failed to fetch latest PR description');
-      throw(error);
+      throw error;
     }
-  }
+  };
 
   /** Get a comment based on story title and PR title similarity. */
   getPRTitleComment = (storyTitle: string, prTitle: string): string => {
